@@ -43,7 +43,7 @@ latest=0
 ## 6:scrapeset=["R"]
 ## 7:scrapeset=["P1","P2","P3","Q"]
 ## 8:scrapeset=["P1","P2","P3","Q","R"]
-scraping=8
+scraping=5
 
 
 
@@ -198,8 +198,8 @@ def qResults(qualis,year):
                 		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
                 		bigdata=[]
                 else:
-                	tn='oldQualiResults'
-                	data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4]))}
+                	tn='QualiResultsto2005'
+                	data={'year':year,'session':quali[1].split('::')[1],'race':quali[1].split('::')[0], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4]))}
                 	bigdata.append(data.copy())
                 	if len(bigdata)>1000:
                 		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
@@ -368,10 +368,11 @@ def yearGrabber(year):
                 s1.append(['http://formula1.com'+u2,r.strip()])
             elif '2' in r2:
                 s2.append(['http://formula1.com'+u2,r.strip()])
-            elif '3' in r2 or 'SATURDAY' in r2:
+            elif '3' in r2 or 'PRACTICE' in r2:
                 s3.append(['http://formula1.com'+u2,r.strip()])
             elif 'QUALI' in r2:
-                qualis.append(['http://formula1.com'+u2,r.strip()])
+                if year>2005: qualis.append(['http://formula1.com'+u2,r.strip()])
+                else: qualis.append(['http://formula1.com'+u2,r.strip()+'::'+r2])
             elif 'RACE' in r2:
                 races.append(['http://formula1.com'+u2,r.strip()])
         #print s1,s2,s3,qualis,races
