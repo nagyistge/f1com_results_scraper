@@ -26,7 +26,7 @@
 
 #years: list containing the years you want to scrape data for
 years=['2014']
-years=range(2005,1949,-1)
+years=range(1996,1949,-1)
 #latest:
 ## 0 - scrape all races
 ## 1 - only scrape data from the most recent race
