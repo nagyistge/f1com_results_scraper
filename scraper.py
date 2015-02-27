@@ -26,7 +26,7 @@
 
 #years: list containing the years you want to scrape data for
 years=['2014']
-years=range(1996,1949,-1)
+years=range(2014,1949,-1)
 #latest:
 ## 0 - scrape all races
 ## 1 - only scrape data from the most recent race
@@ -43,7 +43,8 @@ latest=0
 ## 6:scrapeset=["R"]
 ## 7:scrapeset=["P1","P2","P3","Q"]
 ## 8:scrapeset=["P1","P2","P3","Q","R"]
-scraping=6
+## 9:scrapeset=["P","P1","P2","P3","Q","R"]
+scraping=9
 
 
 
@@ -58,13 +59,16 @@ scraping=6
 ##IF YOU FIND ANY ERRORS IN THE WAY ANY OF THE DATA TABLE HAVE BEEN PARSED,
 ##PLEASE POST AN ISSUE TO https://github.com/psychemedia/wranglingf1datawithr/issues 
 
+
+#UP TO 2005 incl, there are results for 4 practice sessions and 2 qualis
+
 #--------- YOU SHOULD NOT NEED TO GO BELOW HERE
 
 #nodrop:
 ## 0 - drop all tables from current database first 
 ## 1 - retain tables in database - add rows on top of previous rows;
 ## Note that unique data keys are not currently used (?still true?) so retaining tables may duplicate rows 
-nodrop=1
+nodrop=0
 
 
 #Standard libraries
@@ -127,8 +131,8 @@ def tryint(s):
 	except ValueError:
 		return s
 
-def qSpeedScraper(sessions,tn,year): 
-    """ Scrape speed_trap.html results """   
+def qSpeedScraper(sessions,tn,year):
+    """ Scrape speed_trap.html results """
     dropper(tn)
     bigdata=[]
     for quali in sessions:
@@ -141,13 +145,14 @@ def qSpeedScraper(sessions,tn,year):
                 #print flatten(row)
                 cells=row.findall('.//td')
                 
-                data = {'year':year, 'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'timeOfDay':flatten(cells[3]), 'qspeed':flatten(cells[4])}
-
+                data = {'year':year, 'race':quali[1],'session':quali[2], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'timeOfDay':flatten(cells[3]), 'qspeed':flatten(cells[4])}
                 bigdata.append(data.copy())
                 if len(bigdata)>1000:
-                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
                     bigdata=[]
-    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
+    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
 
 
 def qSectorsScraper(sessions,tn,year):
@@ -165,13 +170,15 @@ def qSectorsScraper(sessions,tn,year):
             for row in table.findall('.//tr')[2:]:
                 #print row,flatten(row)
                 cells=row.findall('.//td')
-                data={'year':year, 'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'sector':sector, 'sectortime':flatten(cells[3])}
-                #scraperwiki.sqlite.save(unique_keys=[], table_name=tn, data=data)
+                
+                data={'year':year, 'race':quali[1],'session':quali[2], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'sector':sector, 'sectortime':flatten(cells[3])}
                 bigdata.append(data.copy())
                 if len(bigdata)>1000:
-                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','sector'], table_name=tn, data=bigdata)
+                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','sector','session'], table_name=tn, data=bigdata)
+                    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','sector'], table_name=tn, data=bigdata)
                     bigdata=[]
-    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','sector'], table_name=tn, data=bigdata)
+    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','sector'], table_name=tn, data=bigdata)
+    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','sector','session'], table_name=tn, data=bigdata)
 
     
 def qResults(qualis,year):
@@ -189,12 +196,12 @@ def qResults(qualis,year):
                 #print flatten(row)
                 cells=row.findall('.//td')
                 if flatten(cells[0])=='':continue
-                
+
                 if year>2005:
-                	data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'q1natTime':flatten(cells[4]), 'q1time':getTime(flatten(cells[4])), 'q2natTime':flatten(cells[5]), 'q2time':getTime(flatten(cells[5])), 'q3natTime':flatten(cells[6]), 'q3time':getTime(flatten(cells[6])), 'qlaps':flatten(cells[7])}
+                	data={'year':year,'race':quali[1],'session':quali[2], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'q1natTime':flatten(cells[4]), 'q1time':getTime(flatten(cells[4])), 'q2natTime':flatten(cells[5]), 'q2time':getTime(flatten(cells[5])), 'q3natTime':flatten(cells[6]), 'q3time':getTime(flatten(cells[6])), 'qlaps':flatten(cells[7])}
                 	bigdata.append(data.copy())
                 	if len(bigdata)>1000:
-                		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
                 		bigdata=[]
                 else:
                 	tn='QualiResultsto2005'
@@ -203,9 +210,8 @@ def qResults(qualis,year):
                 	if len(bigdata)>1000:
                 		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
                 		bigdata=[]
-                	
-    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
-
+                     	
+    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
 
 def practiceResults(sessions,tn,year):
     """ Scrape practice session results.html results """
@@ -232,9 +238,11 @@ def practiceResults(sessions,tn,year):
                 #scraperwiki.sqlite.save(unique_keys=[], table_name=tn, data=data)
                 bigdata.append(data.copy())
                 if len(bigdata)>1000:
-                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
                     bigdata=[]
-    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
 
 	
 def resScraper(races,year):
@@ -255,14 +263,16 @@ def resScraper(races,year):
                 cells=row.findall('.//td')
                 
                 try:
-                	data={'year':year,'raceNum':raceNum,'race':race[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'laps':flatten(cells[4]), 'timeOrRetired':flatten(cells[5]), 'grid':flatten(cells[6]), 'points':flatten(cells[7])}
+                	data={'year':year,'raceNum':raceNum,'race':race[1],'session':race[2], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'laps':flatten(cells[4]), 'timeOrRetired':flatten(cells[5]), 'grid':flatten(cells[6]), 'points':flatten(cells[7])}
                 	#scraperwiki.sqlite.save(unique_keys=[], table_name=tn, data=data)
                 	bigdata.append(data.copy())
                 	if len(bigdata)>1000:
-                		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                		#scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
                 		bigdata=[]
                 except: pass
-    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+    #scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum','session'], table_name=tn, data=bigdata)
     #fout.close()
 
 def pitScraper(races,year):
@@ -364,19 +374,18 @@ def yearGrabber(year):
         for (u2,r2) in ah2:
             print '\tb:',u2,r2,':b'
             if 'LIVE' in r2: break
-            if year>2005 and '1' in r2:
-                s1.append(['http://formula1.com'+u2,r.strip()])
-            elif year>2005 and '2' in r2:
-                s2.append(['http://formula1.com'+u2,r.strip()])
-            elif year>2005 and '3' in r2 or 'PRACTICE' in r2:
-                s3.append(['http://formula1.com'+u2,r.strip()])
+            if '1' in r2:
+                s1.append(['http://formula1.com'+u2,r.strip(),r2])
+            elif '2' in r2:
+                s2.append(['http://formula1.com'+u2,r.strip(),r2])
+            elif '3' in r2 or 'PRACTICE' in r2:
+                s3.append(['http://formula1.com'+u2,r.strip(),r2])
             elif year<=2005 and 'PRACTICE' in r2:
             	p.append(['http://formula1.com'+u2,r.strip(),r2])
             elif 'QUALI' in r2:
-                if year>2005: qualis.append(['http://formula1.com'+u2,r.strip()])
-                else: qualis.append(['http://formula1.com'+u2,r.strip(),r2])
+                qualis.append(['http://formula1.com'+u2,r.strip(),r2])
             elif 'RACE' in r2:
-                races.append(['http://formula1.com'+u2,r.strip()])
+                races.append(['http://formula1.com'+u2,r.strip(),r2])
         #print s1,s2,s3,qualis,races
 
     if scraping==1:scrapeset=["P1","P2","P3"]
@@ -413,35 +422,35 @@ def yearGrabber(year):
 
     print("Quali")
     if "Q" in scrapeset:
-        qSpeedScraper(qualis,'qualiSpeeds',year)
+        qSpeedScraper(qualis,'Speeds',year)
         qResults(qualis,year)
-        qSectorsScraper(qualis,'qualiSectors',year)
+        qSectorsScraper(qualis,'Sectors',year)
 
 
     print("P1")
     if "P1" in scrapeset:
     	print "trying for ",s1
-        qSpeedScraper(s1,"p1Speeds",year)
-        qSectorsScraper(s1,"p1Sectors",year)
-        practiceResults(s1,"p1Results",year)
+        qSpeedScraper(s1,"Speeds",year)
+        qSectorsScraper(s1,"Sectors",year)
+        practiceResults(s1,"pResults",year)
 
     print("P2")
     if "P2" in scrapeset:
     	print "trying for ",s2
-        qSpeedScraper(s2,"p2Speeds",year)
-        qSectorsScraper(s2,"p2Sectors",year)
-        practiceResults(s2,"p2Results",year)
+        qSpeedScraper(s2,"Speeds",year)
+        qSectorsScraper(s2,"Sectors",year)
+        practiceResults(s2,"pResults",year)
 
     print("P3")
     if "P3" in scrapeset:
-        qSpeedScraper(s3,"p3Speeds",year)
-        qSectorsScraper(s3,"p3Sectors",year)
-        practiceResults(s3,"p3Results",year)
+        qSpeedScraper(s3,"Speeds",year)
+        qSectorsScraper(s3,"Sectors",year)
+        practiceResults(s3,"pResults",year)
 
-    if p!=[]:
-        qSpeedScraper(p,"p3Speeds",year)
-        qSectorsScraper(p,"p3Sectors",year)
-        practiceResults(p,"p3Results",year)
+    if "P" in scrapeset:
+        qSpeedScraper(p,"Speeds",year)
+        qSectorsScraper(p,"Sectors",year)
+        practiceResults(p,"pResults",year)
     	
 for y in years:
     print("trying {}".format(y))
