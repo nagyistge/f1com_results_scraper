@@ -422,33 +422,33 @@ def yearGrabber(year):
         if year>=2004: pitScraper(races,year)
 
     print("Quali")
-    if "Q" in scrapeset:
+    if "Q" in scrapeset and year>2002:
         qSpeedScraper(qualis,'Speeds',year)
         qResults(qualis,year)
         qSectorsScraper(qualis,'Sectors',year)
 
 
     print("P1")
-    if "P1" in scrapeset:
+    if "P1" in scrapeset and year>2002:
     	print "trying for ",s1
         qSpeedScraper(s1,"Speeds",year)
         qSectorsScraper(s1,"Sectors",year)
         practiceResults(s1,"pResults",year)
 
     print("P2")
-    if "P2" in scrapeset:
+    if "P2" in scrapeset and year>2002:
     	print "trying for ",s2
         qSpeedScraper(s2,"Speeds",year)
         qSectorsScraper(s2,"Sectors",year)
         practiceResults(s2,"pResults",year)
 
     print("P3")
-    if "P3" in scrapeset:
+    if "P3" in scrapeset and year>2002:
         qSpeedScraper(s3,"Speeds",year)
         qSectorsScraper(s3,"Sectors",year)
         practiceResults(s3,"pResults",year)
 
-    if "P" in scrapeset:
+    if "P" in scrapeset and year>2002:
         qSpeedScraper(p,"Speeds",year)
         qSectorsScraper(p,"Sectors",year)
         practiceResults(p,"pResults",year)
