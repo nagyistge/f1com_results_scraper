@@ -26,12 +26,12 @@
 
 #years: list containing the years you want to scrape data for
 years=['2014']
-
+years=range(2014,1949,-1)
 #latest:
 ## 0 - scrape all races
 ## 1 - only scrape data from the most recent race
 ## N - (for integer N>0),  scrape data from the most recent N races
-latest=1
+latest=0
 
 #scraping:
 # A cryptic setting that determines which sessions to scrape data for
@@ -428,6 +428,7 @@ def yearGrabber(year):
         practiceResults(s3,"p3Results",year)
 
 for y in years:
+    print("trying {}".format(y))
     yearGrabber(y)
     #We don't want to keep dropping tables at each pass...
     nodrop=1
