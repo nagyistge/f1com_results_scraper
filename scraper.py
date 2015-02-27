@@ -43,7 +43,7 @@ latest=0
 ## 6:scrapeset=["R"]
 ## 7:scrapeset=["P1","P2","P3","Q"]
 ## 8:scrapeset=["P1","P2","P3","Q","R"]
-scraping=5
+scraping=6
 
 
 
@@ -77,6 +77,7 @@ import urllib, csv
 #pip install scraperwiki
 import lxml.html, scraperwiki
 
+scraperwiki.sqlite.execute('drop table "oldQualiResults"')
 
 def flatten(el):
     """ Helper function to flatten HTML tags by selecting text contained within them """
@@ -199,7 +200,7 @@ def qResults(qualis,year):
                 		bigdata=[]
                 else:
                 	tn='QualiResultsto2005'
-                	data={'year':year,'session':quali[1].split('::')[1],'race':quali[1].split('::')[0], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4]))}
+                	data={'year':year,'session':quali[2],'race':quali[2], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4]))}
                 	bigdata.append(data.copy())
                 	if len(bigdata)>1000:
                 		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
@@ -348,6 +349,7 @@ def yearGrabber(year):
     s1=[]
     s2=[]
     s3=[]
+    p=[]
     qualis=[]
     races=[]
 
@@ -364,15 +366,17 @@ def yearGrabber(year):
         for (u2,r2) in ah2:
             print '\tb:',u2,r2,':b'
             if 'LIVE' in r2: break
-            if '1' in r2:
+            if year>2005 and '1' in r2:
                 s1.append(['http://formula1.com'+u2,r.strip()])
-            elif '2' in r2:
+            elif year>2005 and '2' in r2:
                 s2.append(['http://formula1.com'+u2,r.strip()])
-            elif '3' in r2 or 'PRACTICE' in r2:
+            elif year>2005 and '3' in r2 or 'PRACTICE' in r2:
                 s3.append(['http://formula1.com'+u2,r.strip()])
+            elif year<=2005 and 'PRACTICE' in r2:
+            	p.append(['http://formula1.com'+u2,r.strip(),r2])
             elif 'QUALI' in r2:
                 if year>2005: qualis.append(['http://formula1.com'+u2,r.strip()])
-                else: qualis.append(['http://formula1.com'+u2,r.strip()+'::'+r2])
+                else: qualis.append(['http://formula1.com'+u2,r.strip(),r2])
             elif 'RACE' in r2:
                 races.append(['http://formula1.com'+u2,r.strip()])
         #print s1,s2,s3,qualis,races
@@ -436,6 +440,11 @@ def yearGrabber(year):
         qSectorsScraper(s3,"p3Sectors",year)
         practiceResults(s3,"p3Results",year)
 
+    if p!=[]:
+        qSpeedScraper(p,"p3Speeds",year)
+        qSectorsScraper(p,"p3Sectors",year)
+        practiceResults(p,"p3Results",year)
+    	
 for y in years:
     print("trying {}".format(y))
     yearGrabber(y)
