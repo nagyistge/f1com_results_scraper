@@ -26,7 +26,7 @@
 
 #years: list containing the years you want to scrape data for
 years=['2014']
-years=range(2011,1949,-1)
+years=range(2010,1949,-1)
 #latest:
 ## 0 - scrape all races
 ## 1 - only scrape data from the most recent race
@@ -35,7 +35,7 @@ latest=0
 
 #scraping:
 # A cryptic setting that determines which sessions to scrape data for
-## 1 scrapeset=["P1","P2","P3"]
+## 1 scrapeset=["P","P1","P2","P3"]
 ## 2:scrapeset=["P1","P2"]
 ## 3:scrapeset=["P3"]
 ## 4:scrapeset=["P3","Q"]
@@ -44,7 +44,8 @@ latest=0
 ## 7:scrapeset=["P1","P2","P3","Q"]
 ## 8:scrapeset=["P1","P2","P3","Q","R"]
 ## 9:scrapeset=["P","P1","P2","P3","Q","R"]
-scraping=9
+
+scraping=6
 
 
 
@@ -374,21 +375,21 @@ def yearGrabber(year):
         for (u2,r2) in ah2:
             print '\tb:',u2,r2,':b'
             if 'LIVE' in r2: break
-            if '1' in r2:
+            if  year<=2005 and 'PRACTICE' in r2:
+            	p.append(['http://formula1.com'+u2,r.strip(),r2])
+            elif '1' in r2:
                 s1.append(['http://formula1.com'+u2,r.strip(),r2])
             elif '2' in r2:
                 s2.append(['http://formula1.com'+u2,r.strip(),r2])
             elif '3' in r2 or 'PRACTICE' in r2:
                 s3.append(['http://formula1.com'+u2,r.strip(),r2])
-            elif year<=2005 and 'PRACTICE' in r2:
-            	p.append(['http://formula1.com'+u2,r.strip(),r2])
             elif 'QUALI' in r2:
                 qualis.append(['http://formula1.com'+u2,r.strip(),r2])
             elif 'RACE' in r2:
                 races.append(['http://formula1.com'+u2,r.strip(),r2])
         #print s1,s2,s3,qualis,races
 
-    if scraping==1:scrapeset=["P1","P2","P3"]
+    if scraping==1:scrapeset=["P","P1","P2","P3"]
     if scraping==2:scrapeset=["P1","P2"]
     if scraping==3:scrapeset=["P3"]
     if scraping==4:scrapeset=["P3","Q"]
