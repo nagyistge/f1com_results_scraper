@@ -199,7 +199,7 @@ def qResults(qualis,year):
                 		bigdata=[]
                 else:
                 	tn='oldQualiResults'
-                	data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4])))}
+                	data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4]))}
                 	bigdata.append(data.copy())
                 	if len(bigdata)>1000:
                 		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
