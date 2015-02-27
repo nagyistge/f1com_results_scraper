@@ -45,7 +45,7 @@ latest=0
 ## 8:scrapeset=["P1","P2","P3","Q","R"]
 ## 9:scrapeset=["P","P1","P2","P3","Q","R"]
 
-scraping=5
+scraping=1
 
 
 
