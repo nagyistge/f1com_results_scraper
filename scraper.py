@@ -396,6 +396,7 @@ def yearGrabber(year):
     if scraping==6:scrapeset=["R"]
     if scraping==7:scrapeset=["P1","P2","P3","Q"]
     if scraping==8:scrapeset=["P1","P2","P3","Q","R"]
+    if scraping==9:scrapeset=["P","P1","P2","P3","Q","R"]
 
 
     #Practice: best_sector_times.html, speed_trap.html
