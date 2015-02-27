@@ -409,9 +409,9 @@ def yearGrabber(year):
 
     print ("Race")
     if "R" in scrapeset:
-        flapScraper(races,year)
+        if year>=2004: flapScraper(races,year)
         resScraper(races,year)
-        pitScraper(races,year)
+        if year>=2004: pitScraper(races,year)
 
     print("Quali")
     if "Q" in scrapeset:
