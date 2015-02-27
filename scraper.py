@@ -234,7 +234,7 @@ def practiceResults(sessions,tn,year):
                     natGap=flatten(cells[5])
                     gap=getTime(flatten(cells[5]))
                 #print natGap,gap
-                data={'year':tryint(year),'race':session[1], 'pos':tryint(flatten(cells[0])), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4])), 'natGap':natGap if natGap!='' else float('nan'), 'gap':gap, 'laps':tryint(flatten(cells[6]))}
+                data={'year':tryint(year),'race':session[1],'session':session[2], 'pos':tryint(flatten(cells[0])), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4])), 'natGap':natGap if natGap!='' else float('nan'), 'gap':gap, 'laps':tryint(flatten(cells[6]))}
                 #scraperwiki.sqlite.save(unique_keys=[], table_name=tn, data=data)
                 bigdata.append(data.copy())
                 if len(bigdata)>1000:
