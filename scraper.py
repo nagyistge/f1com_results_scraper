@@ -26,7 +26,7 @@
 
 #years: list containing the years you want to scrape data for
 years=['2014']
-years=range(2014,1949,-1)
+years=range(2005,1949,-1)
 #latest:
 ## 0 - scrape all races
 ## 1 - only scrape data from the most recent race
@@ -64,7 +64,7 @@ scraping=8
 ## 0 - drop all tables from current database first 
 ## 1 - retain tables in database - add rows on top of previous rows;
 ## Note that unique data keys are not currently used (?still true?) so retaining tables may duplicate rows 
-nodrop=0
+nodrop=1
 
 
 #Standard libraries
@@ -191,12 +191,20 @@ def qResults(qualis,year):
                 cells=row.findall('.//td')
                 if flatten(cells[0])=='':continue
                 
-                data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'q1natTime':flatten(cells[4]), 'q1time':getTime(flatten(cells[4])), 'q2natTime':flatten(cells[5]), 'q2time':getTime(flatten(cells[5])), 'q3natTime':flatten(cells[6]), 'q3time':getTime(flatten(cells[6])), 'qlaps':flatten(cells[7])}
-
-                bigdata.append(data.copy())
-                if len(bigdata)>1000:
-                    scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
-                    bigdata=[]
+                if year>2005:
+                	data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'q1natTime':flatten(cells[4]), 'q1time':getTime(flatten(cells[4])), 'q2natTime':flatten(cells[5]), 'q2time':getTime(flatten(cells[5])), 'q3natTime':flatten(cells[6]), 'q3time':getTime(flatten(cells[6])), 'qlaps':flatten(cells[7])}
+                	bigdata.append(data.copy())
+                	if len(bigdata)>1000:
+                		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                		bigdata=[]
+                else:
+                	tn='oldQualiResults'
+                	data={'year':year,'race':quali[1], 'pos':flatten(cells[0]), 'driverNum':flatten(cells[1]), 'driverName':flatten(cells[2]), 'team':flatten(cells[3]), 'natTime':flatten(cells[4]), 'time':getTime(flatten(cells[4])))}
+                	bigdata.append(data.copy())
+                	if len(bigdata)>1000:
+                		scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
+                		bigdata=[]
+                	
     scraperwiki.sqlite.save(unique_keys=['year','race','driverNum'], table_name=tn, data=bigdata)
 
 
