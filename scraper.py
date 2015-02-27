@@ -77,8 +77,6 @@ import urllib, csv
 #pip install scraperwiki
 import lxml.html, scraperwiki
 
-scraperwiki.sqlite.execute('drop table "oldQualiResults"')
-
 def flatten(el):
     """ Helper function to flatten HTML tags by selecting text contained within them """
     result = [ (el.text or "") ]
