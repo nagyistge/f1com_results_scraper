@@ -68,7 +68,7 @@ scraping=9
 ## 0 - drop all tables from current database first 
 ## 1 - retain tables in database - add rows on top of previous rows;
 ## Note that unique data keys are not currently used (?still true?) so retaining tables may duplicate rows 
-nodrop=0
+nodrop=1
 
 
 #Standard libraries
