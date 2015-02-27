@@ -432,3 +432,4 @@ for y in years:
     #We don't want to keep dropping tables at each pass...
     nodrop=1
 
+print("all done...")
